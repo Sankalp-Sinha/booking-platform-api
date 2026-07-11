@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+model User {
+  id            String         @id @default(uuid()) @db.Uuid
+  email         String         @unique @db.VarChar(255)
+  passwordHash  String         @db.VarChar(255)
+  refreshTokens RefreshToken[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Service {
+  id          String    @id @default(uuid()) @db.Uuid
+  title       String    @db.VarChar(150)
+  description String
+  duration    Int
+  price       Decimal   @db.Decimal(10, 2)
+  isActive    Boolean   @default(true)
+  bookings    Booking[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Booking {
+  id            String        @id @default(uuid()) @db.Uuid
+  customerName  String        @db.VarChar(150)
+  customerEmail String        @db.VarChar(255)
+  customerPhone String        @db.VarChar(30)
+  serviceId     String        @db.Uuid
+  bookingDate   DateTime      @db.Date
+  bookingTime   String        @db.VarChar(5)
+  status        BookingStatus @default(PENDING)
+  notes         String?
+
+  service Service @relation(fields: [serviceId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([serviceId, bookingDate, bookingTime])
+  @@index([status])
+  @@index([bookingDate])
+}
+
+model RefreshToken {
+  id        String    @id @default(uuid()) @db.Uuid
+  tokenHash String    @unique @db.VarChar(255)
+  userId    String    @db.Uuid
+  expiresAt DateTime
+  revokedAt DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
