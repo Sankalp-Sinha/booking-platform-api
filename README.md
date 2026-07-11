@@ -4,6 +4,12 @@ A RESTful booking platform backend built using NestJS, Prisma ORM, PostgreSQL, a
 
 The application allows authenticated users to manage services and customer bookings. Customers can create bookings without authentication, while booking management and service management endpoints are protected using JWT authentication.
 
+## Live Deployment
+
+- **Live API:** https://booking-platform-api-i7uq.onrender.com/
+- **Swagger Documentation:** https://booking-platform-api-i7uq.onrender.com/api/docs
+- **Health Check:** https://booking-platform-api-i7uq.onrender.com/api/health
+
 ## Features
 
 ### Authentication
