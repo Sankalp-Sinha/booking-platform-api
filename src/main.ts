@@ -9,10 +9,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const configService = app.get(ConfigService);
-
   const port = Number(configService.get<string>('PORT') ?? 3000);
-
-  await app.listen(port, '0.0.0.0');
 
   app.setGlobalPrefix('api');
 
@@ -33,22 +30,21 @@ async function bootstrap() {
         type: 'http',
         scheme: 'bearer',
         bearerFormat: 'JWT',
-        description: 'Enter the access token received from the login API',
       },
       'access-token',
     )
     .build();
 
-  const documentFactory = () =>
-    SwaggerModule.createDocument(app, swaggerConfig);
+  const document = SwaggerModule.createDocument(app, swaggerConfig);
 
-  SwaggerModule.setup('api/docs', app, documentFactory, {
+  SwaggerModule.setup('api/docs', app, document, {
     swaggerOptions: {
       persistAuthorization: true,
     },
   });
 
-  await app.listen(port);
+  // Keep exactly one app.listen() call.
+  await app.listen(port, '0.0.0.0');
 }
 
 void bootstrap();
