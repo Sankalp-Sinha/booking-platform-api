@@ -42,7 +42,7 @@ CREATE TABLE "Booking" (
 
     CONSTRAINT "Booking_pkey" PRIMARY KEY ("id")
 );
-
+cl
 -- CreateTable
 CREATE TABLE "RefreshToken" (
     "id" UUID NOT NULL,
