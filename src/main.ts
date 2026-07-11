@@ -1,7 +1,7 @@
-import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { RequestMethod, ValidationPipe } from '@nestjs/common';
 
 import { AppModule } from './app.module.js';
 
@@ -11,7 +11,14 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const port = Number(configService.get<string>('PORT') ?? 3000);
 
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix('api', {
+    exclude: [
+      {
+        path: '',
+        method: RequestMethod.GET,
+      },
+    ],
+  });
 
   app.useGlobalPipes(
     new ValidationPipe({
